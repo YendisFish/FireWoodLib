@@ -11,6 +11,8 @@ namespace FireWoodLib.Types.UserHandler
         public string UserToken { get; set; }
         public Defaults Defaults { get; set; }
 
+        public string UserDir { get; set; }
+
         public User(string username, string userToken, Defaults defaults)
         {
             this.Username = username;
@@ -28,17 +30,24 @@ namespace FireWoodLib.Types.UserHandler
         {
             string UserToWrite = JsonConvert.SerializeObject(this);
 
-            string UserDir = Path.Combine(new string[] {this.Defaults.UserDirectory, this.UserToken + "json"});
-            
-            if (!File.Exists(UserDir))
+            if (!File.Exists(this.UserDir))
             {
-                FileStream fs = File.Create(UserDir);
+                FileStream fs = File.Create(this.UserDir);
                 fs.Close();
             }
             
-            File.WriteAllText(this.UserToken + ".json", UserToWrite);
+            File.WriteAllText(this.UserDir, UserToWrite);
         }
-        
-        
+
+        public void SetDefaultDirs()
+        {
+            this.UserDir = Path.Combine(new string[] {this.Defaults.UserDirectory, this.UserToken + ".json"});
+        }
+
+        public User ImportUser(string path)
+        {
+            User toRet = JsonConvert.DeserializeObject<User>(File.ReadAllText(path));
+            return toRet;
+        }
     }
 }

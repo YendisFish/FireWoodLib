@@ -1,4 +1,6 @@
-﻿namespace FireWoodLib.DefaultSetter
+﻿using Newtonsoft.Json;
+
+namespace FireWoodLib.DefaultSetter
 {
     public class Defaults
     {
@@ -11,6 +13,12 @@
             this.LogPath = logPath;
             this.UserDirectory = userDirectory;
             this.UserLogDirectory = userLogDirectory;
+        }
+
+        public string ConvertToJson()
+        {
+            string toRet = JsonConvert.SerializeObject(this);
+            return toRet;
         }
     }
 }

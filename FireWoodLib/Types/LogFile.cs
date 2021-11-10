@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 using FireWoodLib.DefaultSetter;
 using FireWoodLib.Types.UserHandler;
 
-namespace FireWoodLib.Types.Log
+namespace FireWoodLib.Types.Log    
 {
     public class LogFile
     {
@@ -25,7 +25,7 @@ namespace FireWoodLib.Types.Log
             this.Defaults = defaults;
         }
 
-        public void Write(User user)
+        public void WriteData(User user)
         {
             DateTime dateMade = DateTime.Now;
 
@@ -40,7 +40,7 @@ namespace FireWoodLib.Types.Log
             File.AppendAllText(this.LogDir, ContentToWrite);
         }
         
-        public void WriteArray(User user)
+        public void WriteDataArray(User user)
         {
             DateTime dateMade = DateTime.Now;
 
@@ -77,6 +77,61 @@ namespace FireWoodLib.Types.Log
         public void SetDefaultDirs()
         {
             this.LogDir = Path.Combine(new string[] {this.Defaults.LogPath, this.FileName + ".txt"});
+        }
+
+        public void Write(User user, string data)
+        {
+            DateTime date = DateTime.Now;
+
+            string toWrite = $"{date} | {user.Username} | {data.ToString()}";
+            
+            File.AppendAllText(this.LogDir, toWrite);
+        }
+
+        public void WriteArray(User user, string[] data)
+        {
+            DateTime date = DateTime.Now;
+            
+            string dat = "";
+            
+            foreach (string val in data)
+            {
+                dat = dat + data;
+            }
+            
+            string toWrite = $"{date} | {user.Username} | {dat.ToString()}";
+            
+            File.AppendAllText(this.LogDir, dat);
+        }
+
+        public void WriteArrayAsLines(User user, string[] data)
+        {
+            DateTime date = DateTime.Now;
+
+            string Header = date + " | " + user.Username + " | {";
+
+            List<string> dataList = new();
+            
+            foreach (string value in data)
+            {
+                dataList.Add("  " + value);
+            }
+            
+            File.AppendAllText(this.LogDir, Header);
+            File.AppendAllLines(this.LogDir, dataList);
+            File.AppendAllText(this.LogDir, "}");
+        }
+
+        public void ClearLog()
+        {
+            File.WriteAllText(this.LogDir, "");
+        }
+
+        public void WriteError(string ErrorMessage)
+        {
+            string Emessage = "ERROR: " + ErrorMessage;
+            
+            File.AppendAllText(this.LogDir, Emessage);
         }
     }
 }
