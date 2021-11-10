@@ -13,11 +13,11 @@ namespace FireWoodLib.Types.UserHandler
 
         public string UserDir { get; set; }
 
-        public User(string username, string userToken, Defaults defaults)
+        public User(string Username, string UserToken, Defaults Defaults)
         {
-            this.Username = username;
-            this.UserToken = userToken;
-            this.Defaults = defaults;
+            this.Username = Username;
+            this.UserToken = UserToken;
+            this.Defaults = Defaults;
         }
 
         public string[] CombineAllData()
@@ -28,8 +28,10 @@ namespace FireWoodLib.Types.UserHandler
         
         public void CreateAndSetUser()
         {
+            CheckForExistingUser();
+            
             string UserToWrite = JsonConvert.SerializeObject(this);
-
+            
             if (!File.Exists(this.UserDir))
             {
                 FileStream fs = File.Create(this.UserDir);
@@ -41,12 +43,44 @@ namespace FireWoodLib.Types.UserHandler
 
         public void SetDefaultDirs()
         {
-            this.UserDir = Path.Combine(new string[] {this.Defaults.UserDirectory, this.UserToken + ".json"});
+            if (this.UserToken != null)
+            {
+                this.UserDir = Path.Combine(new string[] {this.Defaults.UserDirectory, this.UserToken + ".json"});                
+            }
+            else
+            {
+                this.UserDir = Path.Combine(new string[] {this.Defaults.UserDirectory, "EMPTYTOKEN-" + Guid.NewGuid().ToString() + ".json"}); 
+            }
         }
 
         public User ImportUser(string path)
         {
             User toRet = JsonConvert.DeserializeObject<User>(File.ReadAllText(path));
+            return toRet;
+        }
+        
+        public void SetUserToken()
+        {
+            this.UserToken = Guid.NewGuid().ToString();
+        }
+        
+        public string GenerateUserToken()
+        {
+            string ret = Guid.NewGuid().ToString();
+            return ret;
+        }
+
+        public void CheckForExistingUser()
+        {
+            if (this.UserDir.Contains(this.UserToken))
+            {
+                this.UserToken = Guid.NewGuid().ToString();
+            }
+        }
+
+        public User Clone()
+        {
+            User toRet = new User(this.Username, Guid.NewGuid().ToString(), this.Defaults);
             return toRet;
         }
     }

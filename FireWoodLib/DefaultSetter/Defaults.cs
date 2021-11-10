@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System.IO;
+using Newtonsoft.Json;
 
 namespace FireWoodLib.DefaultSetter
 {
@@ -8,11 +9,27 @@ namespace FireWoodLib.DefaultSetter
         public string UserDirectory { get; set; }
         public string UserLogDirectory { get; set; }
 
-        public Defaults(string logPath, string userDirectory, string userLogDirectory)
+        public Defaults(string LogPath, string UserDirectory, string UserLogDirectory)
         {
-            this.LogPath = logPath;
-            this.UserDirectory = userDirectory;
-            this.UserLogDirectory = userLogDirectory;
+            this.LogPath = LogPath;
+            this.UserDirectory = UserDirectory;
+            this.UserLogDirectory = UserLogDirectory;
+        }
+
+        public void CreateDirs()
+        {
+            if (!Directory.Exists(this.LogPath))
+            {
+                Directory.CreateDirectory(this.LogPath);
+            }
+            if (!Directory.Exists(this.UserDirectory))
+            {
+                Directory.CreateDirectory(this.UserDirectory);
+            }
+            if (!Directory.Exists(this.UserLogDirectory))
+            {
+                Directory.CreateDirectory(this.UserLogDirectory);
+            }
         }
 
         public string ConvertToJson()

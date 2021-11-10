@@ -17,12 +17,12 @@ namespace FireWoodLib.Types.Log
 
         public string LogDir { get; set; }
 
-        public LogFile(string fileName, string data, List<string> dataArray, Defaults defaults)
+        public LogFile(string FileName, string Data, List<string> DataArray, Defaults Defaults)
         {
-            this.FileName = fileName;
-            this.Data = data;
-            this.DataList = dataArray;
-            this.Defaults = defaults;
+            this.FileName = FileName;
+            this.Data = Data;
+            this.DataList = DataArray;
+            this.Defaults = Defaults;
         }
 
         public void WriteData(User user)
@@ -77,6 +77,7 @@ namespace FireWoodLib.Types.Log
         public void SetDefaultDirs()
         {
             this.LogDir = Path.Combine(new string[] {this.Defaults.LogPath, this.FileName + ".txt"});
+            Console.WriteLine(this.LogDir);
         }
 
         public void Write(User user, string data)
@@ -144,6 +145,15 @@ namespace FireWoodLib.Types.Log
         {
             string ret = File.ReadAllText(this.LogDir);
             return ret;
+        }
+
+        public void CreateLog()
+        {
+            if (!File.Exists(this.LogDir))
+            {
+                FileStream fs = File.Create(this.LogDir);
+                fs.Close();
+            }
         }
     }
 }
