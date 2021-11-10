@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using Newtonsoft.Json;
 
 namespace FireWoodLib.Types.UserHandler
 {
@@ -17,6 +19,19 @@ namespace FireWoodLib.Types.UserHandler
         {
             string[] Combined = {Username, UserToken};
             return Combined;
+        }
+        
+        public void CreateAndSetUser(User user)
+        {
+            string UserToWrite = JsonConvert.SerializeObject(user);
+
+            if (!File.Exists(user.UserToken + ".json"))
+            {
+                FileStream fs = File.Create(user.UserToken + ".json");
+                fs.Close();
+            }
+            
+            File.WriteAllText(user.UserToken + ".json", UserToWrite);
         }
     }
 }

@@ -18,22 +18,34 @@ namespace FireWoodLib.Types.Log
             dataArray = DataList;
         }
 
-        public void Write(LogFile log, User user)
+        public void Write(User user)
         {
             DateTime dateMade = DateTime.Now;
 
-            string ContentToWrite = dateMade.ToString() + " | " + user.Username + " | " + log.Data;
+            string ContentToWrite = dateMade.ToString() + " | " + user.Username + " | " + this.Data;
+
+            if (!File.Exists(this.FileName + ".txt"))
+            {
+                FileStream fs  = File.Create(this.FileName + ".txt");
+                fs.Close();
+            }
             
-            File.AppendAllText(log.FileName, ContentToWrite);
+            File.AppendAllText(this.FileName, ContentToWrite);
         }
         
-        public void WriteArray(LogFile log, User user)
+        public void WriteArray(User user)
         {
             DateTime dateMade = DateTime.Now;
 
-            string ContentToWrite = dateMade.ToString() + " | " + user.Username + " | " + log.DataList.ToString();
-
-            File.AppendAllText(log.FileName, ContentToWrite);
+            string ContentToWrite = dateMade.ToString() + " | " + user.Username + " | " + this.DataList.ToString();
+            
+            if (!File.Exists(this.FileName + ".txt"))
+            {
+                FileStream fs = File.Create(this.FileName + ".txt");
+                fs.Close();
+            }
+            
+            File.AppendAllText(this.FileName, ContentToWrite);
         }
     }
 }
