@@ -133,5 +133,17 @@ namespace FireWoodLib.Types.Log
             
             File.AppendAllText(this.LogDir, Emessage);
         }
+
+        public string[] GetLines()
+        {
+            string[] ret = File.ReadAllLines(this.LogDir);
+            return ret;
+        }
+
+        public string ReadLog()
+        {
+            string ret = File.ReadAllText(this.LogDir);
+            return ret;
+        }
     }
 }
