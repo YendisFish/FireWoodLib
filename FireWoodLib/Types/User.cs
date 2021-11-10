@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using FireWoodLib.DefaultSetter;
 using Newtonsoft.Json;
 
 namespace FireWoodLib.Types.UserHandler
@@ -8,11 +9,13 @@ namespace FireWoodLib.Types.UserHandler
     {
         public string Username { get; set; }
         public string UserToken { get; set; }
+        public Defaults Defaults { get; set; }
 
-        public User(string username, string userToken)
+        public User(string username, string userToken, Defaults defaults)
         {
-            username = Username;
-            userToken = UserToken;
+            this.Username = username;
+            this.UserToken = userToken;
+            this.Defaults = defaults;
         }
 
         public string[] CombineAllData()
@@ -21,17 +24,21 @@ namespace FireWoodLib.Types.UserHandler
             return Combined;
         }
         
-        public void CreateAndSetUser(User user)
+        public void CreateAndSetUser()
         {
-            string UserToWrite = JsonConvert.SerializeObject(user);
+            string UserToWrite = JsonConvert.SerializeObject(this);
 
-            if (!File.Exists(user.UserToken + ".json"))
+            string UserDir = Path.Combine(new string[] {this.Defaults.UserDirectory, this.UserToken + "json"});
+            
+            if (!File.Exists(UserDir))
             {
-                FileStream fs = File.Create(user.UserToken + ".json");
+                FileStream fs = File.Create(UserDir);
                 fs.Close();
             }
             
-            File.WriteAllText(user.UserToken + ".json", UserToWrite);
+            File.WriteAllText(this.UserToken + ".json", UserToWrite);
         }
+        
+        
     }
 }
