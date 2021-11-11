@@ -17,6 +17,8 @@ namespace FireWoodLib.Types.Log
 
         public string LogDir { get; set; }
 
+        public string newLine = System.Environment.NewLine;
+
         public LogFile(string FileName, string Data, List<string> DataArray, Defaults Defaults)
         {
             this.FileName = FileName;
@@ -85,8 +87,17 @@ namespace FireWoodLib.Types.Log
             DateTime date = DateTime.Now;
 
             string toWrite = $"{date} | {user.Username} | {data.ToString()}";
-            
-            File.AppendAllText(this.LogDir, toWrite);
+
+            List<string> counter = File.ReadAllLines(this.LogDir).ToList();
+
+            if (counter.Count == 0)
+            {
+                File.WriteAllText(this.LogDir, toWrite);
+            }
+            else
+            {
+                File.AppendAllText(this.LogDir, newLine + toWrite);
+            }
         }
 
         public void WriteArray(User user, string[] data)
@@ -102,7 +113,16 @@ namespace FireWoodLib.Types.Log
             
             string toWrite = $"{date} | {user.Username} | {dat.ToString()}";
             
-            File.AppendAllText(this.LogDir, dat);
+            List<string> counter = File.ReadAllLines(this.LogDir).ToList();
+
+            if (counter.Count == 0)
+            {
+                File.WriteAllText(this.LogDir, toWrite);
+            }
+            else
+            {
+                File.AppendAllText(this.LogDir, newLine + toWrite);
+            }
         }
 
         public void WriteArrayAsLines(User user, string[] data)

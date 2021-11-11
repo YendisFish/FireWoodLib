@@ -24,22 +24,34 @@ namespace FireWoodTester
             TestUser.SetUserToken();
             TestUser.SetDefaultDirs();
             TestUser.CreateAndSetUser();
+            Console.WriteLine("Created user: " + TestUser.CombineAllData()[0] + " " + TestUser.CombineAllData()[1]);
 
-            string TestUserDirecorySetter = TestUser.UserDir.Replace(TestUser.UserToken + ".json", "");
-            
             User TestImportUser = new User(null, null, null);
             TestImportUser = TestImportUser.ImportUser(TestUser.UserDir);
             TestImportUser.SetDefaultDirs();
             TestImportUser.CreateAndSetUser();
-
+            Console.WriteLine("Imported user: " + TestImportUser.CombineAllData()[0] + " " + TestImportUser.CombineAllData()[1]);
+            
             User ClonedUser = TestImportUser.Clone();
             ClonedUser.SetDefaultDirs();
             ClonedUser.CreateAndSetUser();
+            Console.WriteLine("Cloned user: " + ClonedUser.CombineAllData()[0] + " " + ClonedUser.CombineAllData()[1]);
+            
 
             LogFile TesterLogs = new LogFile("testerlog", null, null, TestDefaults);
             TesterLogs.SetDefaultDirs();
             TesterLogs.CreateLog();
             TesterLogs.Write(TestUser, "Hello World!");
+
+            int lines = 1;
+            foreach (string val in TesterLogs.GetLines())
+            {
+                Console.WriteLine(lines.ToString() + "| " + val);
+                lines++;
+            }
+            
+            Console.WriteLine("NoArray:");
+            Console.WriteLine(TesterLogs.ReadLog());
         }
     }
 }
