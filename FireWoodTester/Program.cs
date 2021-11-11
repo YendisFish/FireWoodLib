@@ -10,8 +10,6 @@ namespace FireWoodTester
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Tester INIT");
-
             if (!Directory.Exists("./TesterFiles"))
             {
                 Directory.CreateDirectory("./TesterFiles");
@@ -19,6 +17,7 @@ namespace FireWoodTester
 
             Defaults TestDefaults = new Defaults("./TesterFiles/Logs", "./TesterFiles/Users", "./TesterFiles/UserLogs");
             TestDefaults.CreateDirs();
+            Console.WriteLine("Defaults raw JSON: " + TestDefaults.ConvertToJson());
             
             User TestUser = new User("TestUser", null, TestDefaults);
             TestUser.SetUserToken();
@@ -38,10 +37,14 @@ namespace FireWoodTester
             Console.WriteLine("Cloned user: " + ClonedUser.CombineAllData()[0] + " " + ClonedUser.CombineAllData()[1]);
             
 
-            LogFile TesterLogs = new LogFile("testerlog", null, null, TestDefaults);
+            LogFile TesterLogs = new LogFile("testerlog", "Test Data", new string[] {"Test 1", "Test 2"}, TestDefaults);
             TesterLogs.SetDefaultDirs();
             TesterLogs.CreateLog();
             TesterLogs.Write(TestUser, "Hello World!");
+            TesterLogs.WriteError("Test Error");
+            TesterLogs.WriteData();
+            TesterLogs.WriteRaw("--+++DATA ARRAY+++--");
+            TesterLogs.WriteDataArray();
 
             int lines = 1;
             foreach (string val in TesterLogs.GetLines())
@@ -52,6 +55,12 @@ namespace FireWoodTester
             
             Console.WriteLine("NoArray:");
             Console.WriteLine(TesterLogs.ReadLog());
+
+            Console.WriteLine("Clearing Log");
+            TesterLogs.ClearLog();
+            
+            Console.WriteLine("Deleting Log");
+            TesterLogs.DeleteLog();
         }
     }
 }

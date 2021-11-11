@@ -12,49 +12,55 @@ namespace FireWoodLib.Types.Log
     {
         public string FileName { get; set; }
         public string Data { get; set; }
-        public List<string> DataList { get; set; }
+        public string[] DataArray { get; set; }
         public Defaults Defaults { get; set; }
 
         public string LogDir { get; set; }
 
         public string newLine = System.Environment.NewLine;
 
-        public LogFile(string FileName, string Data, List<string> DataArray, Defaults Defaults)
+        public LogFile(string FileName, string Data, string[] DataArray, Defaults Defaults)
         {
             this.FileName = FileName;
             this.Data = Data;
-            this.DataList = DataArray;
+            this.DataArray = DataArray;
             this.Defaults = Defaults;
         }
 
-        public void WriteData(User user)
+        public void WriteData()
         {
             DateTime dateMade = DateTime.Now;
 
-            string ContentToWrite = dateMade.ToString() + " | " + user.Username + " | " + this.Data;
-
-            if (!File.Exists(this.LogDir))
-            {
-                FileStream fs  = File.Create(this.LogDir);
-                fs.Close();
-            }
+            string ContentToWrite = dateMade.ToString() + " | " + this.Data;
             
-            File.AppendAllText(this.LogDir, ContentToWrite);
+            List<string> counter = File.ReadAllLines(this.LogDir).ToList();
+
+            if (counter.Count == 0)
+            {
+                File.WriteAllText(this.LogDir, ContentToWrite);
+            }
+            else
+            {
+                File.AppendAllText(this.LogDir, newLine + ContentToWrite);
+            }
         }
         
-        public void WriteDataArray(User user)
+        public void WriteDataArray()
         {
             DateTime dateMade = DateTime.Now;
 
-            string ContentToWrite = dateMade.ToString() + " | " + user.Username + " | " + this.DataList.ToString();
+            string ContentToWrite = dateMade.ToString() + " | " + this.DataArray.ToString();
             
-            if (!File.Exists(this.LogDir))
+            List<string> counter = File.ReadAllLines(this.LogDir).ToList();
+
+            if (counter.Count == 0)
             {
-                FileStream fs = File.Create(this.LogDir);
-                fs.Close();
+                File.WriteAllText(this.LogDir, ContentToWrite);
             }
-            
-            File.AppendAllText(this.LogDir, ContentToWrite);
+            else
+            {
+                File.AppendAllText(this.LogDir, newLine + ContentToWrite);
+            }
         }
 
         public LogFile ImportLogFile(string fileName)
@@ -63,14 +69,17 @@ namespace FireWoodLib.Types.Log
             {
                 this.FileName = fileName;
                 this.Data = File.ReadAllText(fileName + ".txt");
-                this.DataList = File.ReadLines(fileName + ".txt").ToList();
+                
+                List<string> ToCast = File.ReadLines(fileName + ".txt").ToList();
+                
+                this.DataArray = ToCast.ToArray();
                 
                 FileInfo fleInf = new FileInfo(fileName);
                 DirectoryInfo fleDir = fleInf.Directory;
 
                 this.Defaults.LogPath = fleDir.ToString();
 
-                return new LogFile(this.FileName, this.Data, this.DataList, this.Defaults);
+                return new LogFile(this.FileName, this.Data, this.DataArray, this.Defaults);
             }
 
             return null;
@@ -79,7 +88,6 @@ namespace FireWoodLib.Types.Log
         public void SetDefaultDirs()
         {
             this.LogDir = Path.Combine(new string[] {this.Defaults.LogPath, this.FileName + ".txt"});
-            Console.WriteLine(this.LogDir);
         }
 
         public void Write(User user, string data)
@@ -174,6 +182,25 @@ namespace FireWoodLib.Types.Log
                 FileStream fs = File.Create(this.LogDir);
                 fs.Close();
             }
+        }
+
+        public void WriteRaw(string data)
+        {
+            List<string> counter = File.ReadAllLines(this.LogDir).ToList();
+
+            if (counter.Count == 0)
+            {
+                File.WriteAllText(this.LogDir, data);
+            }
+            else
+            {
+                File.AppendAllText(this.LogDir, newLine + data);
+            }
+        }
+
+        public void DeleteLog()
+        {
+            File.Delete(this.LogDir);
         }
     }
 }
