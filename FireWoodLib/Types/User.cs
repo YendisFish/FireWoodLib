@@ -13,7 +13,7 @@ namespace FireWoodLib.Types.UserHandler
 
         public string UserDir { get; set; }
 
-        public User(string Username, string UserToken, Defaults Defaults)
+        public User(string Username = null, string UserToken = null, Defaults Defaults = null)
         {
             this.Username = Username;
             this.UserToken = UserToken;
